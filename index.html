@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Commercial Solar ROI & Sizing Engine | Demo by Chyke Webcraft Concepts</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Inter Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between antialiased selection:bg-amber-500 selection:text-slate-950">
+
+  <!-- TOP BRANDING BAR -->
+  <header class="border-b border-slate-800/80 bg-slate-900/60 backdrop-blur sticky top-0 z-50 px-4 py-3">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-2">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-amber-500 to-amber-300 flex items-center justify-center font-black text-slate-950 text-base shadow-lg shadow-amber-500/20">
+          ⚡
+        </div>
+        <span class="font-bold text-sm tracking-wide text-white">Chyke Webcraft Concepts</span>
+      </div>
+      <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/25">
+        Client Demo Prototype
+      </span>
+    </div>
+  </header>
+
+  <!-- MAIN HERO & TOOL SECTION -->
+  <main class="max-w-5xl mx-auto px-4 py-10 sm:py-14 w-full">
+
+    <!-- HEADLINE SECTION -->
+    <div class="text-center max-w-2xl mx-auto mb-10">
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-xs font-medium text-slate-300 mb-4">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        Built for Commercial Solar EPCs & Installers
+      </div>
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight">
+        Calculate Diesel Savings & Pre-Size Your Solar System
+      </h1>
+      <p class="text-slate-400 text-sm sm:text-base mt-3">
+        Enter your commercial facility's monthly diesel expenses to reveal your estimated solar capacity and payback horizon.
+      </p>
+    </div>
+
+    <!-- CALCULATOR & RESULTS CARD -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+      <!-- INPUT CARD (Left 5 Cols) -->
+      <div class="lg:col-span-5 bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-2xl shadow-black/60">
+        <h2 class="text-lg font-bold text-white mb-1 flex items-center gap-2">
+          <span>Facility Energy Profile</span>
+        </h2>
+        <p class="text-xs text-slate-400 mb-6">Input current operational numbers to run the algorithm.</p>
+
+        <form id="solarForm" class="space-y-5" onsubmit="event.preventDefault(); calculateSolar();">
+          
+          <!-- Monthly Spend Input -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wider">
+              Monthly Diesel Spend (₦)
+            </label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 font-bold text-sm">₦</span>
+              <input 
+                type="number" 
+                id="dieselSpend" 
+                min="500000" 
+                step="100000" 
+                value="2500000" 
+                class="w-full bg-slate-950 border border-slate-700/80 rounded-xl pl-9 pr-4 py-3 text-white text-base font-semibold focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all"
+                required
+              />
+            </div>
+            <span class="text-[11px] text-slate-500 mt-1 block">Baseline assumption: ₦1,250/L diesel index.</span>
+          </div>
+
+          <!-- Facility Type Dropdown -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wider">
+              Facility Category
+            </label>
+            <select 
+              id="facilityType"
+              class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-4 py-3 text-white text-sm font-medium focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all"
+            >
+              <option value="hotel">Hospitality / Hotel</option>
+              <option value="hospital">Hospital / Medical Clinic</option>
+              <option value="factory">Manufacturing / Factory</option>
+              <option value="commercial">Office Complex / Plaza</option>
+              <option value="cold_storage">Cold Storage & Agro Processing</option>
+            </select>
+          </div>
+
+          <button 
+            type="submit" 
+            class="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-bold text-sm tracking-wide shadow-lg shadow-amber-500/25 transition-all transform active:scale-[0.98]"
+          >
+            Compute Commercial ROI
+          </button>
+        </form>
+      </div>
+
+      <!-- RESULTS PANEL (Right 7 Cols) -->
+      <div class="lg:col-span-7 space-y-6">
+
+        <!-- Financial Summary Banner -->
+        <div class="bg-gradient-to-br from-amber-500/10 via-slate-900 to-slate-900 border border-amber-500/30 rounded-2xl p-6 relative overflow-hidden">
+          <div class="absolute -right-8 -top-8 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+          <span class="text-xs uppercase tracking-widest font-bold text-amber-400 block mb-1">
+            Projected Financial Return
+          </span>
+
+          <div class="grid grid-cols-2 gap-4 mt-3">
+            <div>
+              <p class="text-xs text-slate-400">Est. Monthly Savings</p>
+              <p id="monthlySavings" class="text-xl sm:text-2xl font-extrabold text-emerald-400 mt-0.5">
+                ₦2,110,000
+              </p>
+            </div>
+            <div>
+              <p class="text-xs text-slate-400">Estimated Payback</p>
+              <p id="paybackPeriod" class="text-xl sm:text-2xl font-extrabold text-white mt-0.5">
+                ~14.5 Months
+              </p>
+            </div>
+          </div>
+
+          <div class="border-t border-slate-800 mt-4 pt-3 flex justify-between items-center text-xs">
+            <span class="text-slate-400">Estimated Annual Fuel Offset:</span>
+            <span id="annualSavings" class="font-bold text-slate-200">₦25,320,000 / year</span>
+          </div>
+        </div>
+
+        <!-- Technical Sizing Blueprint -->
+        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6">
+          <h3 class="text-sm font-bold text-slate-200 uppercase tracking-wider mb-4 flex items-center justify-between">
+            <span>Recommended System Architecture</span>
+            <span class="text-[11px] font-normal text-slate-400 normal-case">LiFePO4 + Tier-1 PV</span>
+          </h3>
+
+          <div class="grid grid-cols-3 gap-3 text-center">
+            <div class="bg-slate-950 border border-slate-800/80 rounded-xl p-3.5">
+              <span class="text-xs text-slate-400 block">Solar Array</span>
+              <span id="solarKWp" class="text-lg font-black text-amber-400 mt-1 block">60 kWp</span>
+            </div>
+            <div class="bg-slate-950 border border-slate-800/80 rounded-xl p-3.5">
+              <span class="text-xs text-slate-400 block">Battery Rack</span>
+              <span id="batteryKWh" class="text-lg font-black text-amber-400 mt-1 block">150 kWh</span>
+            </div>
+            <div class="bg-slate-950 border border-slate-800/80 rounded-xl p-3.5">
+              <span class="text-xs text-slate-400 block">Inverter Rating</span>
+              <span id="inverterKVA" class="text-lg font-black text-amber-400 mt-1 block">100 kVA</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- LEAD CAPTURE FORM / AUDIT GATE -->
+        <div class="bg-slate-900 border border-slate-800/80 rounded-2xl p-6">
+          <h3 class="text-sm font-bold text-white mb-1">Request On-Site Technical Audit</h3>
+          <p class="text-xs text-slate-400 mb-4">
+            Connect this lead directly to your engineering team for an on-site facility audit.
+          </p>
+
+          <form id="leadCaptureForm" class="grid grid-cols-1 sm:grid-cols-2 gap-3" onsubmit="event.preventDefault(); alert('Lead Captured! This form will send data directly to the client\'s CRM or WhatsApp.');">
+            <input 
+              type="text" 
+              placeholder="Facility / Company Name" 
+              class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-amber-500"
+              required 
+            />
+            <input 
+              type="tel" 
+              placeholder="WhatsApp / Phone Number" 
+              class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-amber-500"
+              required 
+            />
+            <button 
+              type="submit" 
+              class="sm:col-span-2 py-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-400 border border-amber-500/30 font-bold text-xs tracking-wider uppercase transition-all"
+            >
+              Book Commercial Energy Audit →
+            </button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER BRANDING -->
+  <footer class="border-t border-slate-900 bg-slate-950/80 py-6 px-4 text-center">
+    <p class="text-xs text-slate-400">
+      Engineered by <span class="font-bold text-white">Chyke Webcraft Concepts</span> — Custom Conversion Engines for High-Value Industries.
+    </p>
+  </footer>
+
+  <!-- CALCULATOR SCRIPT -->
+  <script>
+    const CONSTANTS = {
+      DIESEL_PRICE: 1250,
+      KWH_PER_LITER: 3.0,
+      PEAK_SUN_HOURS: 4.5,
+      SYSTEM_LOSS: 1.25,
+      NIGHT_LOAD_RATIO: 0.60,
+      BATTERY_DOD: 0.80,
+      SOLAR_KWH_OPEX: 65,
+      COST_PER_KWP: 650000,
+      COST_PER_KWH: 320000,
+      COST_PER_KVA: 280000
+    };
+
+    function formatNaira(amount) {
+      return '₦' + Math.round(amount).toLocaleString('en-NG');
+    }
+
+    function calculateSolar() {
+      const spend = parseFloat(document.getElementById('dieselSpend').value) || 0;
+      if (spend <= 0) return;
+
+      // 1. Consumption
+      const monthlyLiters = spend / CONSTANTS.DIESEL_PRICE;
+      const monthlyGenKWh = monthlyLiters * CONSTANTS.KWH_PER_LITER;
+      const dailyKWh = monthlyGenKWh / 30;
+
+      // 2. Sizing Specs
+      const rawSolar = (dailyKWh / CONSTANTS.PEAK_SUN_HOURS) * CONSTANTS.SYSTEM_LOSS;
+      const solarKWp = Math.ceil(rawSolar / 5) * 5;
+
+      const rawBattery = (dailyKWh * CONSTANTS.NIGHT_LOAD_RATIO) / CONSTANTS.BATTERY_DOD;
+      const batteryKWh = Math.ceil(rawBattery / 10) * 10;
+
+      const rawInverter = (solarKWp / 0.8) * 1.25;
+      const inverterKVA = Math.ceil(rawInverter / 10) * 10;
+
+      // 3. Financials
+      const monthlySolarOpex = monthlyGenKWh * CONSTANTS.SOLAR_KWH_OPEX;
+      const monthlySavings = Math.max(0, spend - monthlySolarOpex);
+      const annualSavings = monthlySavings * 12;
+
+      const totalCapEx = (solarKWp * CONSTANTS.COST_PER_KWP) + 
+                         (batteryKWh * CONSTANTS.COST_PER_KWH) + 
+                         (inverterKVA * CONSTANTS.COST_PER_KVA);
+
+      const paybackMonths = monthlySavings > 0 ? (totalCapEx / monthlySavings).toFixed(1) : 0;
+
+      // 4. Update UI
+      document.getElementById('solarKWp').textContent = `${solarKWp} kWp`;
+      document.getElementById('batteryKWh').textContent = `${batteryKWh} kWh`;
+      document.getElementById('inverterKVA').textContent = `${inverterKVA} kVA`;
+      document.getElementById('monthlySavings').textContent = formatNaira(monthlySavings);
+      document.getElementById('annualSavings').textContent = `${formatNaira(annualSavings)} / year`;
+      document.getElementById('paybackPeriod').textContent = `~${paybackMonths} Months`;
+    }
+
+    // Run calculation once on initial page load
+    window.addEventListener('DOMContentLoaded', calculateSolar);
+  </script>
+</body>
+</html>
